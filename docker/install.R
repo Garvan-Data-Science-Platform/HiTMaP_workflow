@@ -4,24 +4,53 @@ install.packages(c(
   "textshaping",
   "ragg",
   "pkgdown",
-  "devtools"
-))
+  "devtools",
+  "ncdf4",
+  "pryr",
+  "pacman",
+  "pls",
+  "magick",
+  "reticulate",
+  "dplyr",
+  "data.table",
+  "doParallel",
+  "iterators",
+  "foreach",
+  "protViz",
+  "egg",
+  "spdep",
+  "zoo",
+  "OrgMassSpecR",
+  "enviPat",
+  "rgl",
+  "XML",
+  "reshape2",
+  "readr",
+  "readxl",
+  "rcdk",
+  "OneR",
+  "future",
+  "BiocManager"
+), repos = "https://cran.csiro.au/")
 BiocManager::install(c(
   "EBImage",
   "ChemmineR",
   "XVector",
   "Biostrings",
   "KEGGREST",
-  "cleaver"
+  "cleaver",
+  "multtest",
+  "Cardinal"
 ))
-remotes::install_github("sneumann/Rdisop")
-remotes::install_github("kuwisdelu/Cardinal")
+remotes::install_github("sneumann/Rdisop@3e66e6d")
+# remotes::install_github("kuwisdelu/Cardinal")
 # Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
-remotes::install_github(
-  "MASHUOA/HiTMaP",
-  force = TRUE,
-  upgrade = "always",
-  verbose = TRUE,
-  build = FALSE
-)
-BiocManager::install(ask = FALSE)
+# remotes::install_github(
+#   "MASHUOA/HiTMaP",
+#   force = TRUE,
+#   upgrade = "always",
+#   verbose = TRUE,
+#   build = FALSE
+# )
+install.packages("/repo/HiTMaP", repos = NULL, type = "source")
+# BiocManager::install(ask = FALSE)
