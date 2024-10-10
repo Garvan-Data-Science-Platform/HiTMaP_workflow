@@ -1,0 +1,6 @@
+FROM hitmap:dev_base
+
+COPY install.R /tmp/R/install.R
+
+RUN Rscript --vanilla /tmp/R/install.R \
+    && rm -r /tmp/R/install.R

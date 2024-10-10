@@ -30,7 +30,8 @@ install.packages(c(
   "rcdk",
   "OneR",
   "future",
-  "BiocManager"
+  "BiocManager",
+  "optparse"
 ), repos = "https://cran.csiro.au/")
 BiocManager::install(c(
   "EBImage",
@@ -43,14 +44,10 @@ BiocManager::install(c(
   "Cardinal"
 ))
 remotes::install_github("sneumann/Rdisop@3e66e6d")
-# remotes::install_github("kuwisdelu/Cardinal")
-# Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
-# remotes::install_github(
-#   "MASHUOA/HiTMaP",
-#   force = TRUE,
-#   upgrade = "always",
-#   verbose = TRUE,
-#   build = FALSE
-# )
-install.packages("/repo/HiTMaP", repos = NULL, type = "source")
-# BiocManager::install(ask = FALSE)
+remotes::install_github(
+  "MASHUOA/HiTMaP@df20be1",
+  force = TRUE,
+  upgrade = "always",
+  verbose = TRUE,
+  build = FALSE
+)

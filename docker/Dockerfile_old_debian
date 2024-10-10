@@ -1,0 +1,31 @@
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y \
+        libz-dev \
+        libxml2-dev \
+        libssl-dev \
+        libcurl4-openssl-dev \
+        libnss-winbind \
+        libudunits2-dev \
+        libgdal-dev \
+        libharfbuzz-dev \
+        libfribidi-dev \
+        libfftw3-dev \
+        libmagick++-dev \
+        dirmngr \
+        gnupg \
+        tcl-dev \
+        tk-dev \
+        winbind \
+        apt-transport-https \
+        ca-certificates \
+        software-properties-common \
+        texlive-full \
+    && rm -r /var/lib/apt/lists/* \
+    && rm -r /var/cache/apt/*
+
+RUN 
+
+COPY install.R /tmp/R/install.R
+
+RUN Rscript --vanilla /tmp/R/install.R
