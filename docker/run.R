@@ -5,20 +5,12 @@ library(HiTMaP)
 check_args <- function() {
   # Get command line arguments
   option_list <- list(
-    make_option(c("-i", "--input"), default = NA),
     make_option(c("-s", "--stage"), default = "full"),
     make_option(c("-c", "--config"), default = NA),
-    make_option(c("-s", "--candidatelist"), default = NA),
-    make_option(c("-f", "--fasta"), default = NA),
     make_option(c("-t", "--threads", default = 1))
   )
 
   opt <- parse_args(OptionParser(option_list = option_list))
-
-  # Check input argument
-  if (is.na(opt$input) || !is.character(opt$input) || !file.exists(opt$input)) {
-    stop(paste("Error: Invalid input data file:", opt$input))
-  }
 
   # Check stage argument
   if (is.na(opt$stage) || !is.character(opt$stage)) {
@@ -45,29 +37,7 @@ check_args <- function() {
     stop("Error: Config file is not an R file.")
   }
 
-  # Check candidatelist argument
-  if (!is.na(opt$candidatelist) && !is.character(opt$candidatelist)) {
-    stop(paste("Error: Invalid argument to --candidatelist:", opt$candidatelist))
-  }
-  if (!is.na(opt$candidatelist) && !file.exists(opt$candidatelist)) {
-    stop(paste("Candidate list file", opt$candidatelist, "doesn't exist."))
-  }
-  if (!is.na(opt$candidatelist) && "gencandidates" %in% opt$stage) {
-    warning("The candidate list generation stage has been specified, so the supplied candidate list will not be used.")
-    opt$candidatelist <- NA
-  }
-
-  # Check fasta argument
-  if (is.na(opt$fasta) || !is.character(opt$fasta)) {
-    stop(paste("Error: Invalid argument to --fasta:", opt$fasta))
-  }
-  if (!file.exists(opt$fasta)) {
-    stop(paste("Error: FASTA file", opt$fasta, "doesn't exist."))
-  }
-  if (!endsWith(opt$fasta, ".fa") && !endsWith(opt$fasta, ".fasta")) {
-    stop("Error: FASTA file does not have the expected '.fa', or '.fasta' extension.")
-  }
-
+  # Check threads argument
   if (is.na(opt$threads) || (!is.numeric(opt$threads) && !is.character(opt$threads))) {
     stop(paste("Error: Invalid argument to --threads:", opt$threads))
   }
@@ -81,10 +51,9 @@ opt <- check_args()
 # Read in config file
 source(opt$config)
 
-config$Fastadatabase <- opt$fasta  # TODO: Get correct path
 config$IMS_analysis <- "ims" %in% opt$stage
 config$Load_candidatelist <- TRUE
-config$use_previous_candidates <- !is.na(opt$candidatelist) && !("gencandidates" %in% opt$stage)
+config$use_previous_candidates <- TRUE
 config$output_candidatelist <- TRUE
 config$Protein_feature_summary <- TRUE
 config$Peptide_feature_summary <- TRUE
