@@ -5,7 +5,7 @@ library(HiTMaP)
 check_args <- function() {
   # Get command line arguments
   option_list <- list(
-    make_option(c("-s", "--stage"), default = "full"),
+    make_option(c("-s", "--stage"), default = NA),
     make_option(c("-c", "--config"), default = NA),
     make_option(c("-t", "--threads", default = 1))
   )
@@ -16,14 +16,9 @@ check_args <- function() {
   if (is.na(opt$stage) || !is.character(opt$stage)) {
     stop(paste("Error: Invalid argument to --stage:", opt$stage))
   }
-  opt$stage <- strsplit(opt$stage, ",")[[1]]
-  valid_stages <- c("full", "gencandidates", "ims", "plot")
-  invalid_stages <- !(opt$stage %in% valid_stages)
-  if (any(invalid_stages)) {
-    stop(paste("Error: Invalid stages supplied to --stage parameter:", paste(invalid_stages, collapse = ", ")))
-  }
-  if ("full" %in% opt$stage) {
-    opt$stage <- c("gencandidates", "ims", "plot")
+  valid_stages <- c("candidates", "ims", "plot")
+  if (!(opt$stage %in% valid_stages)) {
+    stop(paste("Error: Invalid stage supplied to --stage parameter:", opt$stage))
   }
 
   # Check config argument
@@ -51,14 +46,14 @@ opt <- check_args()
 # Read in config file
 source(opt$config)
 
-config$IMS_analysis <- "ims" %in% opt$stage
 config$Load_candidatelist <- TRUE
 config$use_previous_candidates <- TRUE
 config$output_candidatelist <- TRUE
-config$Protein_feature_summary <- TRUE
-config$Peptide_feature_summary <- TRUE
-config$Region_feature_summary <- TRUE
-config$plot_cluster_image_grid <- "plot" %in% opt$stage
+config$IMS_analysis <- opt$stage == "ims"
+config$Protein_feature_summary <- config$ims_analysis
+config$Peptide_feature_summary <- config$ims_analysis
+config$Region_feature_summary <- config$ims_analysis
+config$plot_cluster_image_grid <- opt$stage == "plot"
 config$Thread <- opt$threads
 
 # Run HiTMaP

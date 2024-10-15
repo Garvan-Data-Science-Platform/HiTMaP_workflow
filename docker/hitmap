@@ -3,44 +3,75 @@
 # Usage
 helpmsg() {
     echo -e "Run HiTMaP.\n"
-    echo -e "Usage: hitmap --input INPUT_FILE --fasta FASTA_FILE --rotation ROTATION_FILE --outdir OUTPUT_DIRECTORY\n"
+    echo -e "Usage: hitmap ARGS\n"
 }
 
 # Get arguments
 POSITIONAL=()
+STAGES=()
 RARGS=()
-DATADIR=""
-CANDIDATELIST=""
+CONFIG=""
+DATAFILE=""
+FASTA=""
+RANKFILE=""
+CANDIDATES=""
+IMS=""
+OUTDIR=""
 while [[ $# -gt 0 ]]
 do
     KEY="$1"
     case $KEY in
+        # Help
         -h|--help)
             helpmsg
             exit 0
             ;;
-        -d|--datadir)
-            DATADIR="$2"
+        # Parse the stages to run
+        -s|--stages)
+            IFS=, read -ra STAGES "$2"
             shift
             shift
             ;;
-        -l|--candidatelist)
-            CANDIDATELIST="$2"
-            shift
-            shift
-            ;;
-        -s|--stage)
-            RARGS+=("--stage $2")
-            shift
-            shift
-            ;;
+        # These are passed straight to the R commands
         -c|--config)
+            CONFIG="$2"
             RARGS+=("--config $2")
             shift
             shift
             ;;
         -t|--threads)
             RARGS+=("--threads $2")
+            shift
+            shift
+            ;;
+        # These options are used to determine how to run the workflow
+        -d|--datafile)
+            DATAFILE="$2"
+            shift
+            shift
+            ;;
+        -f|--fasta)
+            FASTA="$2"
+            shift
+            shift
+            ;;
+        -r|--rankfile)
+            RANKFILE="$2"
+            shift
+            shift
+            ;;
+        -l|--candidates)
+            CANDIDATES="$2"
+            shift
+            shift
+            ;;
+        -i|--ims)
+            IMS="$2"
+            shift
+            shift
+            ;;
+        -o|--outidr)
+            OUTDIR="$2"
             shift
             shift
             ;;
@@ -53,20 +84,108 @@ done
 
 set -- "${POSITIONAL[@]}"
 
-if [ -z "${RARGS}" ]
+# Check arguments
+if [ -z "${STAGES}" ] || [ -z "${CONFIG}" ] || [ -z "${DATAFILE}" ] || [ -z "${FASTA}" ] || [ -z "${OUTDIR}" ]
 then
     echo "ERROR: Missing arguments."
+    helpmsg
     exit 1
 fi
+
+STAGECANDIDATES=false
+STAGEIMS=false
+STAGEPLOT=false
+for STAGE in "${STAGES[@]}"
+do
+    if [ "${STAGE}" == "full" ]
+    then
+        STAGECANDIDATES=true
+        STAGEIMS=true
+        STAGEPLOT=true
+    elif [ "${STAGE}" == "candidates" ]
+    then
+        STAGECANDIDATES=true
+    elif [ "${STAGE}" == "ims" ]
+    then
+        STAGEIMS=true
+    elif [ "${STAGE}" == "plot" ]
+    then
+        STAGEPLOT=true
+    else
+        echo "ERROR: Invalid stage '${STAGE}' specified."
+        exit 1
+    fi
+done
+
+if [ ! -f "${CONFIG}" ]
+then
+    echo "ERROR: Config file is missing."
+    exit 1
+fi
+
+if [ ! -f "${DATAFILE}" ]
+then
+    echo "ERROR: Datafile '${DATAFILE}' does not exist."
+    exit 1
+fi
+IBDFILE=$(dirname "${DATAFILE}")/$(basename "${DATAFILE}" .imzML).ibd
+if [ ! -f "${IBDFILE}" ]
+then
+    echo "ERROR: Datafile '${IBDFILE}' does not exist."
+    exit 1
+fi
+
+if [ ! -f "${FASTA}" ]
+then
+    echo "ERROR: FASTA file '${FASTA}' does not exist."
+    exit 1
+fi
+
+if [ -d "${OUTIDR}" ]
+then
+    echo "ERROR: Output directory already exists."
+    exit 1
+fi
+
+if [ -n "${RANKFILE}" ] && [ ! -f "${RANKFILE}" ]
+then
+    echo "ERROR: Specified rank file '${RANKFILE}' does not exist."
+    exit 1
+fi
+
+if [ -n "${CANDIDATES}" ] && [ ! -f "${CANDIDATES}" ]
+then
+    echo "ERROR: Specified candidates files '${CANDIDATES}' does not exist."
+    exit 1
+fi
+if [ "${STAGECANDIDATES}" = false ] && [ -z "${CANDIDATES}" ]
+then
+    echo "WARNING: No candidates file is provided, so one will be generated."
+    STAGECANDIDATES=true
+fi
+
+if [ -n "${IMS}" ] && [ ! -f "${IMS}" ]
+then
+    echo "ERROR: Specified IMS analysis file '${IMS}' does not exist."
+    exit 1
+fi
+
 
 set -euo pipefail
 
 
-if [ -z "${DATADIR}" ] || [ ! -d "${DATADIR}" ]
+# Create working directory and copy data files into it
+WORKDIR=$(mktemp -d tmp.XXXXXXXXXX)
+cp "${DATAFILE}" "${IBDFILE}" "${FASTA}" "${RANKFILE}" "${WORKDIR}/"
+if [ "${STAGECANDIDATES}" = false ]
 then
-    echo "ERROR: Data directory '${DATADIR}' does not exist."
-    exit 1
+    tar -xzf "${CANDIDATES}" -C "${WORKDIR}/"
 fi
+if [ "${STAGEIMS}" = false ] && [ "${STAGEPLOT}" = true ]
+then
+    tar -xzf "${IMS}" -C "${WORKDIR}/"
+fi
+
 
 SUMMARYDIR="${DATADIR%/}/Summary folder"
 if [ -n "${CANDIDATELIST}" ] && [ -f "${CANDIDATELIST}" ]
