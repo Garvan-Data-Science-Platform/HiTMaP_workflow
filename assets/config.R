@@ -1,8 +1,7 @@
 config <- list(
   # REQUIRED ARGUMENTS
-  datafile = NULL,
-  Fastadatabase = NULL,
-  # Additional arguments
+  # datafile = NULL,
+  # Fastadatabase = NULL,
   threshold = 0.005,
   ppm = 5,
   mode = c("Proteomics", "Metabolomics"),
@@ -70,8 +69,6 @@ config <- list(
   ),
   Smooth_range = 1,
   Virtual_segmentation = FALSE,
-  Virtual_segmentation_rankfile = NULL,
-  Rotate_IMG = NULL,
   Spectrum_validate = TRUE,
   score_method = "SQRTP",
   deconv_peaklist = "New",
