@@ -45,5 +45,8 @@ RUN apt-get update && apt-get install -y \
         apt-transport-https \
         ca-certificates \
         software-properties-common \
+        procps \
     && rm -r /var/lib/apt/lists/* \
     && rm -r /var/cache/apt/*
+
+CMD [ "bash" ]

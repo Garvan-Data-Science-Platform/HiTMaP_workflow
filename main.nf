@@ -15,18 +15,18 @@ HiTMap Nextflow Workflow
 ========================
 Workflow parameters:
 ========================
-mode           : ${params.mode}
-config         : ${params.config}
-datafile       : ${params.datafile}
-ibdfile        : ${params.ibdfile}
-fasta          : ${params.fasta}
-rotationfile   : ${params.rotationfile}
-rankfile       : ${params.rankfile}
-candidates     : ${params.candidates}
-imsdata        : ${params.imsdata}
-threads        : ${params.threads}
-container_dir  : ${params.container_dir}
-outdir         : ${params.outdir}
+mode              : ${params.mode}
+config            : ${params.config}
+datafile          : ${params.datafile}
+ibdfile           : ${params.ibdfile}
+fasta             : ${params.fasta}
+rotationfile      : ${params.rotationfile}
+rankfile          : ${params.rankfile}
+candidates        : ${params.candidates}
+imsdata           : ${params.imsdata}
+threads           : ${params.threads}
+hitmap_container  : ${params.hitmap_container}
+outdir            : ${params.outdir}
 ========================
 
 """
@@ -44,24 +44,24 @@ def helpMessage() {
 
     Parameter description:
 
-    mode           RUNMODE  Specify the run mode. $modes_str ('full').
-    config         PATH     Path to the config R file. Required.
-    datafile       PATH     Path to the data .imzML file. Required.
-    ibdfile        PATH     Path to the data .ibd file. Required.
-    fasta          PATH     Path to the FASTA file. Required.
-    rotationfile   PATH     Path to a roation CSV file. Optional.
-    rankfile       PATH     Path to a rank CSV file. Optional.
-    candidates     PATH     Path to a tar file containing the outputs of a previous run of the candidates mode. Optional.
-    imsdata        PATH     Path to a tar file containing the joint outputs of a previous run of the candidates and IMS analysis modes. Optional.
-    threads        PATH     Number of threads to use (1).
-    container_dir  PATH     false
-    outdir         PATH     Output directory ('results/').
+    mode              RUNMODE  Specify the run mode. $modes_str ('full').
+    config            PATH     Path to the config R file. Required.
+    datafile          PATH     Path to the data .imzML file. Required.
+    ibdfile           PATH     Path to the data .ibd file. Required.
+    fasta             PATH     Path to the FASTA file. Required.
+    rotationfile      PATH     Path to a roation CSV file. Optional.
+    rankfile          PATH     Path to a rank CSV file. Optional.
+    candidates        PATH     Path to a tar file containing the outputs of a previous run of the candidates mode. Optional.
+    imsdata           PATH     Path to a tar file containing the joint outputs of a previous run of the candidates and IMS analysis modes. Optional.
+    threads           PATH     Number of threads to use (1).
+    hitmap_container  PATH     false
+    outdir            PATH     Output directory ('results/').
     """.stripIndent()
 }
 
 workflow {
     // Check for valid parameters
-    if ( params.help || !modes.contains(params.mode) || params.container_dir == false ){   
+    if ( params.help || !modes.contains(params.mode) || params.hitmap_container == false ){   
         helpMessage()
         exit 1
     }
@@ -108,6 +108,9 @@ workflow {
         run_candidates = (params.candidates == false && params.imsdata == false)
         run_ims = (params.imsdata == false)
         run_plot = true
+    } else {
+        helpMessage()
+        exit 1
     }
 
     // Print which stages are to be run

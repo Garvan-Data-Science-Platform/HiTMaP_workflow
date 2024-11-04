@@ -1,7 +1,4 @@
 config <- list(
-  # REQUIRED ARGUMENTS
-  # datafile = NULL,
-  # Fastadatabase = NULL,
   threshold = 0.005,
   ppm = 5,
   mode = c("Proteomics", "Metabolomics"),
@@ -37,7 +34,7 @@ config <- list(
   Bypass_generate_spectrum = FALSE,
   peptide_ID_filter = 2,
   plot_ion_image = FALSE,
-  parallel = detectCores(),
+  parallel = parallel::detectCores(),
   spectra_segments_per_file = 4,
   Segmentation = c(
     "spatialKMeans",

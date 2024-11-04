@@ -1,9 +1,8 @@
 // Run candidates generation
 process candidates {
-    debug = true
+    debug = false
     tag "candidates"
-    // container "${params.container_dir}/hitmap.sif"
-    container "hitmap:latest"
+    container "${params.hitmap_container}"
 
     input:
     path(datafile, stageAs: 'workdir/*')
@@ -19,13 +18,18 @@ process candidates {
 
     script:
     """
-    ./run.R \
+    RANKFILE="--rankfile ${rankfile}"
+    if [ -z "\$(head -c 1 ${rankfile})" ]; then RANKFILE=""; fi
+    ROTATIONFILE="--rotationfile ${rotationfile}"
+    if [ -z "\$(head -c 1 ${rotationfile})" ]; then ROTATIONFILE=""; fi
+
+    run.R \
         --stage candidates \
         --config ${config} \
         --datafile ${datafile} \
         --fasta ${fasta} \
-        --rankfile ${rankfile} \
-        --rotationfile ${rotationfile} \
+        \$RANKFILE \
+        \$ROTATIONFILE \
         --threads ${threads}
     tar -cf candidates.tar -C workdir/ "Summary folder/"
     """

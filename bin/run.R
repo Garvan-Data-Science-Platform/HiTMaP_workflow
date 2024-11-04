@@ -1,16 +1,16 @@
-#!/usr/bin/env Rscript --vanilla
+#!/usr/bin/env -S Rscript --vanilla
 library(optparse)
 library(HiTMaP)
 
 check_args <- function() {
   # Get command line arguments
   option_list <- list(
-    make_option(c("-s", "--stage"), default = NA),
-    make_option(c("-c", "--config"), default = NA),
-    make_option(c("-d", "--datafile"), default = NA),
-    make_option(c("-f", "--fasta"), default = NA),
-    make_option(c("-n", "--rankfile"), default = NA),
-    make_option(c("-r", "--rotationfile"), default = NA),
+    make_option(c("-s", "--stage"), default = NA_character_),
+    make_option(c("-c", "--config"), default = NA_character_),
+    make_option(c("-d", "--datafile"), default = NA_character_),
+    make_option(c("-f", "--fasta"), default = NA_character_),
+    make_option(c("-n", "--rankfile"), default = NA_character_),
+    make_option(c("-r", "--rotationfile"), default = NA_character_),
     make_option(c("-t", "--threads", default = 1))
   )
 
@@ -39,6 +39,11 @@ check_args <- function() {
   # Check datafile argument - required
   if (is.na(opt$datafile) || !is.character(opt$datafile)) {
     stop(paste("Error: Invalid argument to --datafile:", opt$datafile))
+  }
+  # Convert to absolute path
+  opt$datafile <- path.expand(opt$datafile)
+  if (!startsWith(opt$datafile, "/")) {
+    opt$datafile <- file.path(getwd(), opt$datafile)
   }
   if (!file.exists(opt$datafile)) {
     stop(paste("Error: Data file", opt$datafile, "doesn't exist."))
@@ -98,15 +103,15 @@ opt <- check_args()
 # Read in config file
 source(opt$config)
 
-config$datafile <- basename(opt$datafile)
+config$datafile <- opt$datafile
 config$Fastadatabase <- basename(opt$fasta)
 config$Load_candidatelist <- TRUE
 config$use_previous_candidates <- TRUE
 config$output_candidatelist <- TRUE
 config$IMS_analysis <- (opt$stage == "ims")
-config$Protein_feature_summary <- config$ims_analysis
-config$Peptide_feature_summary <- config$ims_analysis
-config$Region_feature_summary <- config$ims_analysis
+config$Protein_feature_summary <- config$IMS_analysis
+config$Peptide_feature_summary <- config$IMS_analysis
+config$Region_feature_summary <- config$IMS_analysis
 config$plot_cluster_image_grid <- (opt$stage == "plot")
 config$Thread <- opt$threads
 if (is.na(opt$rankfile)) {

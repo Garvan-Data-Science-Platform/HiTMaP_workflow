@@ -1,8 +1,8 @@
 // Run ploting
 process plot {
-    debug = true
+    debug = false
     tag "plot"
-    // container "${params.container_dir}/hitmap.sif"
+    container "${params.hitmap_container}"
 
     input:
     path(candidate_list_and_ims_outs, stageAs: 'inputs/*')
@@ -20,15 +20,20 @@ process plot {
     script:
     sample = datafile.baseName.replaceAll(/\.imzML$/, '')
     """
+    RANKFILE="--rankfile ${rankfile}"
+    if [ -z "\$(head -c 1 ${rankfile})" ]; then RANKFILE=""; fi
+    ROTATIONFILE="--rotationfile ${rotationfile}"
+    if [ -z "\$(head -c 1 ${rotationfile})" ]; then ROTATIONFILE=""; fi
+
     mkdir -p workdir
     tar -xf ${candidate_list_and_ims_outs} -C workdir/
-    ./run.R \
+    run.R \
         --stage plot \
         --config ${config} \
         --datafile ${datafile} \
         --fasta ${fasta} \
-        --rankfile ${rankfile} \
-        --rotationfile ${rotationfile} \
+        \$RANKFILE \
+        \$ROTATIONFILE \
         --threads ${threads}
     tar -cf plot.tar -C workdir/ "Summary folder/" "${sample} ID/"
     """

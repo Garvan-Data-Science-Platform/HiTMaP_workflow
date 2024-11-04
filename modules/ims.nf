@@ -1,8 +1,8 @@
 // Run IMS analysis
 process ims {
-    debug = true
+    debug = false
     tag "ims"
-    // container "${params.container_dir}/hitmap.sif"
+    container "${params.hitmap_container}"
 
     input:
     path(candidate_list, stageAs: 'inputs/*')
@@ -20,15 +20,20 @@ process ims {
     script:
     sample = datafile.baseName.replaceAll(/\.imzML$/, '')
     """
+    RANKFILE="--rankfile ${rankfile}"
+    if [ -z "\$(head -c 1 ${rankfile})" ]; then RANKFILE=""; fi
+    ROTATIONFILE="--rotationfile ${rotationfile}"
+    if [ -z "\$(head -c 1 ${rotationfile})" ]; then ROTATIONFILE=""; fi
+
     mkdir -p workdir
     tar -xf ${candidate_list} -C workdir/
-    ./run.R \
+    run.R \
         --stage ims \
         --config ${config} \
         --datafile ${datafile} \
         --fasta ${fasta} \
-        --rankfile ${rankfile} \
-        --rotationfile ${rotationfile} \
+        \$RANKFILE \
+        \$ROTATIONFILE \
         --threads ${threads}
     tar -cf ims.tar -C workdir/ "Summary folder/" "${sample} ID/"
     """
