@@ -49,18 +49,18 @@ config <- list(
   preprocess = list(
     force_preprocess = TRUE,
     use_preprocessRDS = FALSE,
-    smoothSignal = list(method = c("disable", "gaussian", "sgolay", "ma")[1]),
-    reduceBaseline = list(method = c("disable", "locmin", "median")[1]),
+    smoothSignal = list(method = c("Disable", "gaussian", "sgolay", "ma")[1]),
+    reduceBaseline = list(method = c("Disable", "locmin", "median")[1]),
     peakPick = list(method = c("adaptive", "diff", "sd", "mad", "quantile", "filter", "cwt")[4]),
     peakAlign = list(
       tolerance = 5,
       units = "ppm",
       level = c("local", "global")[1],
-      method = c("enable", "disable")[1]
+      method = c("enable", "Disable")[1]
     ),
     peakFilter = list(freq.min = 0.05),
     normalize = list(
-      method = c("disable", "rms", "tic", "reference")[1],
+      method = c("Disable", "rms", "tic", "reference")[1],
       mz = NULL
     )
   ),
