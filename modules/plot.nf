@@ -21,9 +21,9 @@ process plot {
     sample = datafile.baseName.replaceAll(/\.imzML$/, '')
     """
     RANKFILE="--rankfile ${rankfile}"
-    if [ -z "\$(head -c 1 ${rankfile})" ]; then RANKFILE=""; fi
+    if [ -z "\$(head -c 1 ${rankfile})" ]; then RANKFILE=""; echo "No rank file provided"; else echo "Rank file provided: ${rankfile}"; fi
     ROTATIONFILE="--rotationfile ${rotationfile}"
-    if [ -z "\$(head -c 1 ${rotationfile})" ]; then ROTATIONFILE=""; fi
+    if [ -z "\$(head -c 1 ${rotationfile})" ]; then ROTATIONFILE=""; echo "No rotation file provided"; else echo "Rotation file provided: ${rotationfile}"; fi
 
     mkdir -p workdir
     tar -xf ${candidate_list_and_ims_outs} -C workdir/

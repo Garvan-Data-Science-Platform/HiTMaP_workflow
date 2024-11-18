@@ -19,9 +19,9 @@ process candidates {
     script:
     """
     RANKFILE="--rankfile ${rankfile}"
-    if [ -z "\$(head -c 1 ${rankfile})" ]; then RANKFILE=""; fi
+    if [ -z "\$(head -c 1 ${rankfile})" ]; then RANKFILE=""; echo "No rank file provided"; else echo "Rank file provided: ${rankfile}"; fi
     ROTATIONFILE="--rotationfile ${rotationfile}"
-    if [ -z "\$(head -c 1 ${rotationfile})" ]; then ROTATIONFILE=""; fi
+    if [ -z "\$(head -c 1 ${rotationfile})" ]; then ROTATIONFILE=""; echo "No rotation file provided"; else echo "Rotation file provided: ${rotationfile}"; fi
 
     run.R \
         --stage candidates \
