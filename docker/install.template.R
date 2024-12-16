@@ -45,7 +45,7 @@ BiocManager::install(c(
 ))
 remotes::install_github("sneumann/Rdisop@3e66e6d")
 remotes::install_github(
-  "MASHUOA/HiTMaP@df20be1",
+  "MASHUOA/HiTMaP@HITMAPCOMMIT",
   force = TRUE,
   upgrade = "always",
   verbose = TRUE,
