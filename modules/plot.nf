@@ -3,6 +3,7 @@ process plot {
     debug = false
     tag "plot"
     container "${params.hitmap_container}"
+    time params.time.plot
 
     input:
     path(candidate_list_and_ims_outs, stageAs: 'inputs/*')

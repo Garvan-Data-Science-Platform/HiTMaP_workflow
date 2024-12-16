@@ -3,6 +3,7 @@ process ims {
     debug = false
     tag "ims"
     container "${params.hitmap_container}"
+    time params.time.ims
 
     input:
     path(candidate_list, stageAs: 'inputs/*')

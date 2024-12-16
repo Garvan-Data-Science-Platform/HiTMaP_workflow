@@ -3,6 +3,7 @@ process candidates {
     debug = false
     tag "candidates"
     container "${params.hitmap_container}"
+    time params.time.candidates
 
     input:
     path(datafile, stageAs: 'workdir/*')
