@@ -4,6 +4,7 @@ process ims {
     tag "ims"
     container "${params.hitmap_container}"
     time params.time.ims
+    publishDir "results/ims", mode: 'copy'
 
     input:
     path(candidate_list, stageAs: 'inputs/*')

@@ -4,6 +4,7 @@ process candidates {
     tag "candidates"
     container "${params.hitmap_container}"
     time params.time.candidates
+    publishDir "results/candidates", mode: 'copy'
 
     input:
     path(datafile, stageAs: 'workdir/*')
