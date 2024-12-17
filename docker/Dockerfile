@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y \
     && rm -r /var/lib/apt/lists/* \
     && rm -r /var/cache/apt/*
 
-COPY install.R /tmp/R/install.R
+COPY install.base.R /tmp/R/install.base.R
 
 RUN Rscript --vanilla /tmp/R/install.base.R \
     && rm -r /tmp/R/install.base.R \
