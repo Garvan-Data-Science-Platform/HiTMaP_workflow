@@ -14,7 +14,6 @@ process plot {
     path(rankfile, stageAs: 'workdir/rank.csv')
     path(rotationfile, stageAs: 'workdir/rotation.csv')
     path(config)
-    val(threads)
 
     output:
     path("plot.tar"), emit: plot
@@ -36,7 +35,7 @@ process plot {
         --fasta ${fasta} \
         \$RANKFILE \
         \$ROTATIONFILE \
-        --threads ${threads}
+        --threads ${task.cpus}
     tar -cf plot.tar -C workdir/ "Summary folder/" "${sample} ID/"
     """
 
@@ -52,7 +51,7 @@ process plot {
         --fasta ${fasta} \
         --rankfile ${rankfile} \
         --rotationfile ${rotationfile} \
-        --threads ${threads}
+        --threads ${task.cpus}
     mkdir -p "workdir/Summary folder/"
     mkdir -p "workdir/${sample} ID/"
     touch "workdir/Summary folder/plot_outputs"

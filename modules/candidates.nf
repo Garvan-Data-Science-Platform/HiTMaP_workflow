@@ -13,7 +13,6 @@ process candidates {
     path(rankfile, stageAs: 'workdir/rank.csv')
     path(rotationfile, stageAs: 'workdir/rotation.csv')
     path(config)
-    val(threads)
 
     output:
     path("candidates.tar"), emit: candidates
@@ -32,7 +31,7 @@ process candidates {
         --fasta ${fasta} \
         \$RANKFILE \
         \$ROTATIONFILE \
-        --threads ${threads}
+        --threads ${task.cpus}
     tar -cf candidates.tar -C workdir/ "Summary folder/"
     """
 
@@ -45,7 +44,7 @@ process candidates {
         --fasta ${fasta} \
         --rankfile ${rankfile} \
         --rotationfile ${rotationfile} \
-        --threads ${threads}
+        --threads ${task.cpus}
     mkdir -p "workdir/Summary folder/"
     touch "workdir/Summary folder/candidatelist.csv"
     tar -cf candidates.tar -C workdir/ "Summary folder/"

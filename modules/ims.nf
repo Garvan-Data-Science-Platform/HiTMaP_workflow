@@ -14,7 +14,6 @@ process ims {
     path(rankfile, stageAs: 'workdir/rank.csv')
     path(rotationfile, stageAs: 'workdir/rotation.csv')
     path(config)
-    val(threads)
 
     output:
     path("ims.tar"), emit: ims
@@ -36,7 +35,7 @@ process ims {
         --fasta ${fasta} \
         \$RANKFILE \
         \$ROTATIONFILE \
-        --threads ${threads}
+        --threads ${task.cpus}
     tar -cf ims.tar -C workdir/ "Summary folder/" "${sample} ID/"
     """
 
@@ -52,7 +51,7 @@ process ims {
         --fasta ${fasta} \
         --rankfile ${rankfile} \
         --rotationfile ${rotationfile} \
-        --threads ${threads}
+        --threads ${task.cpus}
     mkdir -p "workdir/Summary folder/"
     mkdir -p "workdir/${sample} ID/"
     touch "workdir/Summary folder/candidatelist.csv"

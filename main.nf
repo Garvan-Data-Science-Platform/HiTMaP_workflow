@@ -139,21 +139,21 @@ workflow {
 
     // Run stages
     if ( run_candidates ) {
-        candidates(datafile, ibdfile, fasta, rankfile, rotationfile, config, threads)
+        candidates(datafile, ibdfile, fasta, rankfile, rotationfile, config)
         candidate_list = candidates.out.candidates
     } else {
         candidate_list = Channel.fromPath( params.candidates, checkIfExists: true )
     }
 
     if ( run_ims ) {
-        ims(candidate_list, datafile, ibdfile, fasta, rankfile, rotationfile, config, threads)
+        ims(candidate_list, datafile, ibdfile, fasta, rankfile, rotationfile, config)
         ims_outs = ims.out.ims
     } else if ( run_plot ) {
         ims_outs = Channel.fromPath( params.imsdata, checkIfExists: true )
     }
 
     if ( run_plot ) {
-        plot(ims_outs, datafile, ibdfile, fasta, rankfile, rotationfile, config, threads)
+        plot(ims_outs, datafile, ibdfile, fasta, rankfile, rotationfile, config)
         plot_outs = plot.out.plot
     }
 }
