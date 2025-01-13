@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl=2
 
-include { version } from './modules/version'
+include { run_info } from './modules/run_info'
 include { candidates } from './modules/candidates'
 include { ims } from './modules/ims'
 include { plot } from './modules/plot'
@@ -130,8 +130,8 @@ workflow {
     ========================
     """.stripIndent()
 
-    // Grab HiTMaP version
-    version()
+    // Grab HiTMaP run info
+    run_info(config)
 
     // Exit now if this is a dry run
     if ( params.dryrun ) {

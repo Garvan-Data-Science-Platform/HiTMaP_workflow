@@ -1,14 +1,16 @@
-// Get HiTMaP version
-process version {
+// Get HiTMaP run information
+process run_info {
     debug = false
-    tag "version"
+    tag "run_info"
     container "${params.hitmap_container}"
     time "5m"
-    publishDir "results/${params.datetime}/version", mode: 'copy'
+    publishDir "results/${params.datetime}/run_info", mode: 'copy'
 
     input:
+    path(config, stageAs: "config.R")
 
     output:
+    path("config.R"), emit: config
     path("version.txt"), emit: version
 
     script:
