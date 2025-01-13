@@ -30,8 +30,9 @@ RUN apt-get update && apt-get install -y \
 COPY install.base.R /tmp/R/install.base.R
 
 RUN Rscript --vanilla /tmp/R/install.base.R \
-    && rm -r /tmp/R/install.base.R \
-    && Rscript --vanilla -e "remotes::install_github('MASHUOA/HiTMaP@${VERSION}', force = TRUE, upgrade = 'always', verbose = TRUE, build = FALSE)"
+    && rm -r /tmp/R/install.base.R
+
+RUN Rscript --vanilla -e "remotes::install_github('MASHUOA/HiTMaP@${VERSION}', force = TRUE, upgrade = 'always', verbose = TRUE, build = FALSE)"
 
 FROM r-base:4.4.1
 

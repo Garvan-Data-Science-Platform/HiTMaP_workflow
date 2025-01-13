@@ -21,7 +21,7 @@ COMMIT=df20be1
 docker build -t hitmap:${COMMIT} --build-arg VERSION=${COMMIT} .
 ```
 
-Note that the initial build process will take up to an hour. Subsequent builds, even when using different HiTMaP versions, should take considerably less time as they can rely on the cached base layer from the initial buid.
+Note that the initial build process will take up to an hour. Subsequent builds, even when using different HiTMaP versions, should take considerably less time as they can rely on the cached base layer from the initial build.
 
 ### Singularity
 No official singularity image has been published, although the docker image that can be created by the above steps can be converted to a singularity image:
@@ -60,6 +60,15 @@ In most cases, you will likely want to run the workflow on an HPC system. The cu
 If running a small data set on a local machine with docker installed, you can instead use the `docker` profile and supply a docker image to `--hitmap_container` (e.g. `--hitmap_container hitmap:latest` or `--hitmap_container australia-southeast1-docker.pkg.dev/my-project/hitmap_repo/hitmap:latest`).
 
 The `-resume` flag is an optional but very useful flag that tells Nextflow to re-use the outputs of successful runs when re-running the pipeline. This is useful in cases such as where a job has failed due to low memory or disk space and needs to be re-run with higher resources. In such a case, the outputs of preceding jobs that ran successfully would be used, rather than re-running the whole pipeline from scratch.
+
+### Memory requirements
+By default, the workflow requests 16GB of memory to run each stage of the workflow. If you would like to increase or decrease this value, you can supply the `--memory` parameter on the command line:
+
+```bash
+nextflow run main.nf \
+    --memory 32 \
+    ...
+```
 
 ### Workflow stages
 This Nextflow workflow is divided into three stages:

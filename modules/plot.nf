@@ -4,7 +4,7 @@ process plot {
     tag "plot"
     container "${params.hitmap_container}"
     time params.time.plot
-    publishDir "results/plot", mode: 'copy'
+    publishDir "results/${params.datetime}/plot", mode: 'copy'
 
     input:
     path(candidate_list_and_ims_outs, stageAs: 'inputs/*')

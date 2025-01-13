@@ -2,6 +2,7 @@
 
 nextflow.enable.dsl=2
 
+include { version } from './modules/version'
 include { candidates } from './modules/candidates'
 include { ims } from './modules/ims'
 include { plot } from './modules/plot'
@@ -128,6 +129,9 @@ workflow {
 
     ========================
     """.stripIndent()
+
+    // Grab HiTMaP version
+    version()
 
     // Exit now if this is a dry run
     if ( params.dryrun ) {
