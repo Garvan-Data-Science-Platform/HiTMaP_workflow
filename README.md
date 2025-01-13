@@ -41,6 +41,22 @@ singularity pull docker://australia-southeast1-docker.pkg.dev/my-project/hitmap_
 singularity build hitmap.sif docker-daemon://local/hitmap:latest
 ```
 
+#### Pulling from private Artifact Registry repositories
+If you run into authentication issues when attempting to run `singularity pull` from a private Google Artifact Registry repository, you may have to set the `SINGULARITY_DOCKER_USERNAME` and `SINGULARITY_DOCKER_PASSWORD` environemnt variables. This will also require using the `gcloud` command line tool to generate a temporary access token for authenticating with Google Cloud.
+
+```bash
+# Ensure you have already logged into Google Cloud from the terminal
+gcloud auth login
+# Follow the prompts to complete login.
+
+# Set the docker environment variables
+export SINGULARITY_DOCKER_USERNAME=oauth2accesstoken
+export SINGULARITY_DOCKER_PASSWORD=$(gcloud auth print-access-token)
+
+# Run singularity pull
+singularity pull docker://australia-southeast1-docker.pkg.dev/my-project/hitmap_repo/hitmap:latest
+```
+
 ## Running the workflow
 The Nextflow workflow is run as follows:
 
