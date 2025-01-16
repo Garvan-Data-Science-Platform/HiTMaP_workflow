@@ -13,12 +13,24 @@ There are a few options for obtaining a HiTMaP docker image:
 #### Building the docker image
 Run the steps below to build a HiTMaP docker image. Supply the `VERSION` build argument to `docker build` to specify a branch, tag, or commit of the [official HiTMaP git repository](https://github.com/MASHUOA/HiTMaP) to install.
 
+To build on Intel/x86_64 architecutres, run the following:
+
 ```bash
 cd docker/
 
 COMMIT=df20be1
 
 docker build -t hitmap:${COMMIT} --build-arg VERSION=${COMMIT} .
+```
+
+If your computer uses an ARM architecture (e.g. Mac M-series), you will need to instead build the image from the `Dockerfile_arm64` Dockerfile:
+
+```bash
+cd docker/
+
+COMMIT=df20be1
+
+docker build -t hitmap:${COMMIT} --build-arg VERSION=${COMMIT} -f Dockerfile_arm64 .
 ```
 
 Note that the initial build process will take up to an hour. Subsequent builds, even when using different HiTMaP versions, should take considerably less time as they can rely on the cached base layer from the initial build.
