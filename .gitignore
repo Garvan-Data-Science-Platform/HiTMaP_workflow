@@ -1,0 +1,5 @@
+/test/
+/.nextflow/
+/.nextflow*
+/results/
+/work/
